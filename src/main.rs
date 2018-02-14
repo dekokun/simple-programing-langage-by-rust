@@ -4,10 +4,10 @@ use std::process;
 fn main() {
     let program = env::args().nth(1).expect("Missing argument");
 
-    println!("{:?}", eval(program, 0));
+    println!("{:?}", eval(&program, 0).0);
 }
 
-fn eval(program: String, mut pointer: usize) -> usize {
+fn eval(program: &str, mut pointer: usize) -> (usize, usize) {
     while pointer <= program.len() - 1 && program.chars().nth(pointer).unwrap() == ' ' {
         pointer += 1;
     }
@@ -19,7 +19,12 @@ fn eval(program: String, mut pointer: usize) -> usize {
             val = val * 10 + program.chars().nth(pointer).unwrap().to_digit(10).unwrap();
             pointer += 1;
         }
-        return val as usize;
+        return (val as usize, pointer);
+    }
+    if p == '+' {
+        let (x, pointer) = eval(program, pointer);
+        let (y, pointer) = eval(program, pointer);
+        return (x + y, pointer);
     }
     error(format!("Invalid character: {:?}", p));
 }
