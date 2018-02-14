@@ -10,5 +10,7 @@ runtest() {
 }
 
 runtest 0 0
+runtest 1 1
+runtest 21 21
 
 echo OK
