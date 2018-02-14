@@ -1,0 +1,14 @@
+#!/bin/bash
+
+runtest() {
+  output=$(cargo run "$1")
+  if [ "$output" != "$2" ]; then
+    echo "$1: $2 expected. but got $output"
+    exit 1
+  fi
+  echo "$1 => $output"
+}
+
+runtest 0 0
+
+echo OK
