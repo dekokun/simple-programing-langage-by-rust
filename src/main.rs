@@ -7,6 +7,9 @@ fn main() {
 }
 
 fn eval(program: String, mut pointer: usize) -> usize {
+    while pointer <= program.len() - 1 && program.chars().nth(pointer).unwrap() == ' ' {
+        pointer += 1;
+    }
     let p = program.chars().nth(pointer).unwrap();
     pointer += 1;
     let mut val = p.to_digit(10).unwrap();

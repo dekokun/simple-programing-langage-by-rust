@@ -12,5 +12,7 @@ runtest() {
 runtest 0 0
 runtest 1 1
 runtest 21 21
+runtest 5555 5555
+runtest ' 1' '1'
 
 echo OK
