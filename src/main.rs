@@ -22,10 +22,9 @@ fn eval(program: String, mut pointer: usize) -> usize {
         return val as usize;
     }
     error(format!("Invalid character: {:?}", p));
-    return 0;
 }
 
-fn error(error: String) {
+fn error(error: String) -> ! {
     eprintln!("{}", error);
     process::exit(1);
 }
