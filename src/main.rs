@@ -21,10 +21,10 @@ fn eval(program: &str, mut pointer: usize) -> (usize, usize) {
         }
         return (val as usize, pointer);
     }
-    if p == '+' {
+    if p == '+' || p == '-' {
         let (x, pointer) = eval(program, pointer);
         let (y, pointer) = eval(program, pointer);
-        return (x + y, pointer);
+        return (if p == '+' { x + y } else { x - y }, pointer);
     }
     error(format!("Invalid character: {:?}", p));
 }
