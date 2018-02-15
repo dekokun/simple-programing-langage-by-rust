@@ -13,11 +13,15 @@ runtest 0 0
 runtest 1 1
 runtest 21 21
 runtest 5555 5555
+
+echo '=== arithmetic operators ==='
+
 runtest '+ 1 1' '2'
 runtest '+ 10 21' '31'
 runtest '* 3 5' '15'
 runtest '- 5 1' '4'
 runtest '/ 4 2' '2'
 runtest '+ + + 1 + 2 3 4 5' '15'
+runtest '+ 2 *4 3' '14'
 
 echo OK
