@@ -15,30 +15,32 @@ fn eval(program: &str, mut pointer: usize) -> (usize, usize) {
     let p = program.chars().nth(pointer).unwrap();
     pointer += 1;
 
-    // Literal numbers
-    if p.is_digit(10) {
-        let mut val = p.to_digit(10).unwrap();
-        while pointer <= program.len() - 1 && program.chars().nth(pointer).unwrap().is_digit(10) {
-            val = val * 10 + program.chars().nth(pointer).unwrap().to_digit(10).unwrap();
-            pointer += 1;
+    match p {
+        // Literal numbers
+        _ if p.is_digit(10) => {
+            let mut val = p.to_digit(10).unwrap();
+            while pointer <= program.len() - 1 && program.chars().nth(pointer).unwrap().is_digit(10)
+            {
+                val = val * 10 + program.chars().nth(pointer).unwrap().to_digit(10).unwrap();
+                pointer += 1;
+            }
+            return (val as usize, pointer);
         }
-        return (val as usize, pointer);
-    }
-
-    // arithmetic operators
-    if "+-*/".contains(p) {
-        let (x, pointer) = eval(program, pointer);
-        let (y, pointer) = eval(program, pointer);
-        let val = match p {
-            '+' => x + y,
-            '-' => x - y,
-            '*' => x * y,
-            '/' => x / y,
-            _ => error(format!("Invalid operator: {:?}", p)),
-        };
-        return (val, pointer);
-    }
-    error(format!("Invalid character: {:?}", p));
+        // arithmetic operators
+        '+' | '-' | '*' | '/' => {
+            let (x, pointer) = eval(program, pointer);
+            let (y, pointer) = eval(program, pointer);
+            let val = match p {
+                '+' => x + y,
+                '-' => x - y,
+                '*' => x * y,
+                '/' => x / y,
+                _ => error(format!("Invalid operator: {:?}", p)),
+            };
+            return (val, pointer);
+        }
+        _ => error(format!("Invalid character: {:?}", p)),
+    };
 }
 
 fn error(error: String) -> ! {
