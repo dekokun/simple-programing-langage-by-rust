@@ -21,10 +21,17 @@ fn eval(program: &str, mut pointer: usize) -> (usize, usize) {
         }
         return (val as usize, pointer);
     }
-    if p == '+' || p == '-' {
+    if "+-*/".contains(p) {
         let (x, pointer) = eval(program, pointer);
         let (y, pointer) = eval(program, pointer);
-        return (if p == '+' { x + y } else { x - y }, pointer);
+        let val = match p {
+            '+' => x + y,
+            '-' => x - y,
+            '*' => x * y,
+            '/' => x / y,
+            _ => error(format!("Invalid operator: {:?}", p)),
+        };
+        return (val, pointer);
     }
     error(format!("Invalid character: {:?}", p));
 }

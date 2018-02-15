@@ -15,4 +15,8 @@ runtest 21 21
 runtest 5555 5555
 runtest '+ 1 1' '2'
 runtest '+ 10 21' '31'
+runtest '* 3 5' '15'
 runtest '- 5 1' '4'
+runtest '/ 4 2' '2'
+
+echo OK
