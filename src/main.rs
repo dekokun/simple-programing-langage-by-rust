@@ -28,6 +28,16 @@ fn eval(
         'a'...'z' => {
             return (args[p as usize - 'a' as usize], pointer);
         }
+        'P' => {
+            if next != '(' {
+                error(format!("expect: (, actual: {}", next));
+            }
+            // '('
+            pointer += 1;
+            let (val, pointer) = eval(program, func, pointer, args);
+            println!("{}", val);
+            return (val, pointer);
+        }
         // Function definition
         'A'...'Z' if next == '[' => {
             let func_name = p;

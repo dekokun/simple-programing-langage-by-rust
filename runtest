@@ -38,4 +38,8 @@ runtest 'F[+ a a] + F(2) F(3) ' 10
 runtest 'F[+ a b] + F(2 3) F(3 4) ' 12
 runtest 'F[- a b] F( F(6 2) F(5 3) )' 2
 
+echo '=== built-in function==='
+runtest 'P(5)' '5
+5'
+
 echo OK
