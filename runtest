@@ -26,4 +26,6 @@ runtest '/ 4 2' '2'
 runtest '+ + + 1 + 2 3 4 5' '15'
 runtest '+ 2 *4 3' '14'
 
+echo '=== functions ==='
+runtest 'F[+ . . ] + 1 2' 3
 echo OK
