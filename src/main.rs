@@ -41,6 +41,16 @@ fn eval(
             pointer += 1;
             return eval(program, func, pointer, arg);
         }
+        // Function application
+        'A'...'Z' if next == '(' => {
+            let func_name = p;
+            // '('
+            pointer += 1;
+            let (newarg, _) = eval(program, func, pointer, arg);
+
+            let func_string = func.get(&func_name).unwrap();
+            return eval(func_string, &mut func.clone(), 0, newarg);
+        }
         // Literal numbers
         _ if p.is_digit(10) => {
             let mut val = p.to_digit(10).unwrap();

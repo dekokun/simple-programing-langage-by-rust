@@ -28,4 +28,11 @@ runtest '+ 2 *4 3' '14'
 
 echo '=== functions ==='
 runtest 'F[+ . . ] + 1 2' 3
+
+runtest 'F[+ . . ] F(1)' 2
+runtest 'F[* . 2 ] F(5)' 10
+runtest 'F[* . . ] F(F(2))' 16
+runtest 'F[/ . . ] F(F(3))' 1
+runtest 'F[G(.)] G[+ . .] F(2)' 4
+
 echo OK
