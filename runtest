@@ -1,7 +1,9 @@
 #!/bin/bash
 
+cargo build || exit 1
+
 runtest() {
-  output=$(cargo run "$1")
+  output=$(./target/debug/lang "$1")
   if [ "$output" != "$2" ]; then
     echo "$1: $2 expected. but got $output"
     exit 1
