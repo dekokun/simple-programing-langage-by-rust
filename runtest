@@ -34,5 +34,6 @@ runtest 'F[* . 2 ] F(5)' 10
 runtest 'F[* . . ] F(F(2))' 16
 runtest 'F[/ . . ] F(F(3))' 1
 runtest 'F[G(.)] G[+ . .] F(2)' 4
+runtest 'F[+ . .] + F(2) F(3) ' 10
 
 echo OK

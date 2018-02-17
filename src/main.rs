@@ -46,10 +46,13 @@ fn eval(
             let func_name = p;
             // '('
             pointer += 1;
-            let (newarg, _) = eval(program, func, pointer, arg);
+            let (newarg, mut pointer) = eval(program, func, pointer, arg);
 
             let func_string = func.get(&func_name).unwrap();
-            return eval(func_string, &mut func.clone(), 0, newarg);
+            let (val, _) = eval(func_string, &mut func.clone(), 0, newarg);
+            // ')'
+            pointer += 1;
+            return (val, pointer);
         }
         // Literal numbers
         _ if p.is_digit(10) => {
