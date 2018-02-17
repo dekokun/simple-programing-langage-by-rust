@@ -3,7 +3,7 @@
 cargo build || exit 1
 
 runtest() {
-  output=$(./target/debug/lang "$1")
+  output=$(RUST_BACKTRACE=1 ./target/debug/lang "$1")
   if [ "$output" != "$2" ]; then
     echo "$1: $2 expected. but got $output"
     exit 1
