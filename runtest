@@ -27,13 +27,15 @@ runtest '+ + + 1 + 2 3 4 5' '15'
 runtest '+ 2 *4 3' '14'
 
 echo '=== functions ==='
-runtest 'F[+ . . ] + 1 2' 3
+runtest 'F[+ a a ] + 1 2' 3
 
-runtest 'F[+ . . ] F(1)' 2
-runtest 'F[* . 2 ] F(5)' 10
-runtest 'F[* . . ] F(F(2))' 16
-runtest 'F[/ . . ] F(F(3))' 1
-runtest 'F[G(.)] G[+ . .] F(2)' 4
-runtest 'F[+ . .] + F(2) F(3) ' 10
+runtest 'F[+ a a ] F(1)' 2
+runtest 'F[* a 2 ] F(5)' 10
+runtest 'F[* a a ] F(F(2))' 16
+runtest 'F[/ a a ] F(F(3))' 1
+runtest 'F[G(a)] G[+ a a] F(2)' 4
+runtest 'F[+ a a] + F(2) F(3) ' 10
+runtest 'F[+ a b] + F(2 3) F(3 4) ' 12
+runtest 'F[- a b] F( F(6 2) F(5 3) )' 2
 
 echo OK
