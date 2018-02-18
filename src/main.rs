@@ -71,7 +71,13 @@ fn eval(state: &mut State) -> (usize, usize) {
             state.pointer += 1;
             let mut newargs = Vec::new();
             while state.program.chars().nth(state.pointer).unwrap() != ')' {
-                if state.program.chars().nth(state.pointer).unwrap() == ' ' {
+                if state
+                    .program
+                    .chars()
+                    .nth(state.pointer)
+                    .unwrap()
+                    .is_whitespace()
+                {
                     state.pointer += 1;
                     continue;
                 }
@@ -93,7 +99,11 @@ fn eval(state: &mut State) -> (usize, usize) {
                 val = result.0;
                 func_pointer = result.1;
                 while func_pointer <= func_string.len() - 1
-                    && func_string.chars().nth(func_pointer).unwrap() == ' '
+                    && func_string
+                        .chars()
+                        .nth(func_pointer)
+                        .unwrap()
+                        .is_whitespace()
                 {
                     func_pointer += 1;
                 }
