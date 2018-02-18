@@ -6,7 +6,7 @@ fn main() {
     let program = env::args().nth(1).expect("Missing argument");
 
     let func = &mut HashMap::new();
-    let args = &mut HashMap::new();
+    let args = &mut Vec::new();
     println!("{:?}", eval(&program, func, 0, args).0);
 }
 
@@ -14,7 +14,7 @@ fn eval(
     program: &str,
     func: &mut HashMap<char, String>,
     mut pointer: usize,
-    args: &mut HashMap<usize, usize>,
+    args: &mut Vec<usize>,
 ) -> (usize, usize) {
     let p = program.chars().nth(pointer).unwrap();
     pointer += 1;
@@ -28,7 +28,7 @@ fn eval(
         // Function parameter
         'a'...'z' => {
             // println!("args: {:?}", args);
-            return (*args.get(&(p as usize - 'a' as usize)).unwrap(), pointer);
+            return (args[p as usize - 'a' as usize], pointer);
         }
         'P' => {
             if next != '(' {
@@ -62,17 +62,15 @@ fn eval(
             let func_name = p;
             // '('
             pointer += 1;
-            let mut i = 0;
-            let mut newargs = &mut HashMap::new();
+            let mut newargs = &mut Vec::new();
             while program.chars().nth(pointer).unwrap() != ')' {
                 if program.chars().nth(pointer).unwrap() == ' ' {
                     pointer += 1;
                     continue;
                 }
                 let result = eval(program, func, pointer, args);
-                newargs.insert(i, result.0);
+                newargs.push(result.0);
                 pointer = result.1;
-                i += 1;
             }
 
             let func_string = func.get(&func_name).unwrap();
