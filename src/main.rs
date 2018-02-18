@@ -21,7 +21,7 @@ fn eval(
     let next = program.chars().nth(pointer).unwrap_or('a');
     match p {
         // skip space
-        ' ' => {
+        _ if p.is_whitespace() => {
             return eval(program, func, pointer, args);
         }
         // Function parameter
