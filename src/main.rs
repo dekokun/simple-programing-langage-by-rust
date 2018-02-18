@@ -15,15 +15,15 @@ fn eval(
     mut pointer: usize,
     mut args: [usize; 26],
 ) -> (usize, usize) {
-    // skip space
-    while pointer <= program.len() - 1 && program.chars().nth(pointer).unwrap() == ' ' {
-        pointer += 1;
-    }
     let p = program.chars().nth(pointer).unwrap();
     pointer += 1;
 
     let next = program.chars().nth(pointer).unwrap_or('a');
     match p {
+        // skip space
+        ' ' => {
+            return eval(program, func, pointer, args);
+        }
         // Function parameter
         'a'...'z' => {
             return (args[p as usize - 'a' as usize], pointer);
