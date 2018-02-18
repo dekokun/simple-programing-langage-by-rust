@@ -77,7 +77,7 @@ fn eval(
             return (val, pointer);
         }
         // Literal numbers
-        _ if p.is_digit(10) => {
+        '0'...'9' => {
             let mut val = p.to_digit(10).unwrap();
             while pointer <= program.len() - 1 && program.chars().nth(pointer).unwrap().is_digit(10)
             {
