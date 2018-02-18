@@ -64,10 +64,6 @@ fn eval(
             let mut i = 0;
             let mut newargs = [None; 26];
             while program.chars().nth(pointer).unwrap() != ')' {
-                if program.chars().nth(pointer).unwrap() == ' ' {
-                    pointer += 1;
-                    continue;
-                }
                 let result = eval(program, func, pointer, args);
                 newargs[i] = Some(result.0);
                 pointer = result.1;
