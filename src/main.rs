@@ -27,7 +27,6 @@ fn eval(state: &mut State) -> (usize, usize) {
     let p = state.program.chars().nth(state.pointer).unwrap();
     state.pointer += 1;
 
-    let next = state.program.chars().nth(state.pointer).unwrap_or('a');
     match p {
         // skip space
         _ if p.is_whitespace() => {
@@ -39,8 +38,8 @@ fn eval(state: &mut State) -> (usize, usize) {
             return (state.args[p as usize - 'a' as usize], state.pointer);
         }
         'P' => {
-            if next != '(' {
-                error(format!("expect: (, actual: {}", next));
+            if next(state) != '(' {
+                error(format!("expect: (, actual: {}", next(state)));
             }
             // '('
             state.pointer += 1;
@@ -51,7 +50,7 @@ fn eval(state: &mut State) -> (usize, usize) {
             return (val, pointer);
         }
         // Function definition
-        'A'...'Z' if next == '[' => {
+        'A'...'Z' if next(state) == '[' => {
             let func_name = p;
             // '['
             state.pointer += 1;
@@ -66,7 +65,7 @@ fn eval(state: &mut State) -> (usize, usize) {
             return eval(state);
         }
         // Function application
-        'A'...'Z' if next == '(' => {
+        'A'...'Z' if next(state) == '(' => {
             let func_name = p;
             // '('
             state.pointer += 1;
@@ -143,8 +142,7 @@ fn eval(state: &mut State) -> (usize, usize) {
         }
         _ => error(format!(
             "Invalid character: {:?}, pointer: {:?}",
-            p,
-            state.pointer
+            p, state.pointer
         )),
     };
 }
@@ -155,4 +153,14 @@ fn error(error: String) -> ! {
 }
 fn _log(log: String) {
     eprintln!("{}", log);
+}
+
+fn next(state: &State) -> char {
+    return state
+        .program
+        .get(state.pointer..state.pointer + 1)
+        .unwrap()
+        .chars()
+        .last()
+        .unwrap();
 }
