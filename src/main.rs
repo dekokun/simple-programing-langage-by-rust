@@ -6,14 +6,14 @@ fn main() {
     let program = env::args().nth(1).expect("Missing argument");
 
     let func = &mut HashMap::new();
-    println!("{:?}", eval(&program, func, 0, [0; 26]).0);
+    println!("{:?}", eval(&program, func, 0, [None; 26]).0);
 }
 
 fn eval(
     program: &str,
     func: &mut HashMap<char, String>,
     mut pointer: usize,
-    mut args: [usize; 26],
+    args: [Option<usize>; 26],
 ) -> (usize, usize) {
     let p = program.chars().nth(pointer).unwrap();
     pointer += 1;
@@ -26,7 +26,8 @@ fn eval(
         }
         // Function parameter
         'a'...'z' => {
-            return (args[p as usize - 'a' as usize], pointer);
+            // println!("args: {:?}", args);
+            return (args[p as usize - 'a' as usize].unwrap(), pointer);
         }
         'P' => {
             if next != '(' {
@@ -34,8 +35,10 @@ fn eval(
             }
             // '('
             pointer += 1;
-            let (val, pointer) = eval(program, func, pointer, args);
+            let (val, mut pointer) = eval(program, func, pointer, args);
             println!("{}", val);
+            // ')'
+            pointer += 1;
             return (val, pointer);
         }
         // Function definition
@@ -59,19 +62,31 @@ fn eval(
             // '('
             pointer += 1;
             let mut i = 0;
+            let mut newargs = [None; 26];
             while program.chars().nth(pointer).unwrap() != ')' {
                 if program.chars().nth(pointer).unwrap() == ' ' {
                     pointer += 1;
                     continue;
                 }
                 let result = eval(program, func, pointer, args);
+                newargs[i] = Some(result.0);
                 pointer = result.1;
-                args[i] = result.0;
                 i += 1;
             }
 
             let func_string = func.get(&func_name).unwrap();
-            let (val, _) = eval(func_string, &mut func.clone(), 0, args);
+            let mut func_pointer = 0;
+            let mut val = 0;
+            while func_pointer <= func_string.len() - 1 {
+                let result = eval(func_string, &mut func.clone(), func_pointer, newargs);
+                val = result.0;
+                func_pointer = result.1;
+                while func_pointer <= func_string.len() - 1
+                    && func_string.chars().nth(func_pointer).unwrap() == ' '
+                {
+                    func_pointer += 1;
+                }
+            }
             // ')'
             pointer += 1;
             return (val, pointer);
@@ -99,11 +114,18 @@ fn eval(
             };
             return (val, pointer);
         }
-        _ => error(format!("Invalid character: {:?}", p)),
+        _ => error(format!(
+            "Invalid character: {:?}, pointer: {:?}",
+            p,
+            pointer
+        )),
     };
 }
 
 fn error(error: String) -> ! {
     eprintln!("{}", error);
     process::exit(1);
+}
+fn _log(log: String) {
+    eprintln!("{}", log);
 }
