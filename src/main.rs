@@ -20,10 +20,10 @@ fn main() {
         pointer: 0,
         args: args,
     };
-    println!("{:?}", eval(&mut state).unwrap().0);
+    println!("{:?}", eval(&mut state).unwrap());
 }
 
-fn eval(state: &mut State) -> Option<(usize, usize)> {
+fn eval(state: &mut State) -> Option<usize> {
     let p = state.program.chars().nth(state.pointer)?;
     state.pointer += 1;
 
@@ -35,7 +35,7 @@ fn eval(state: &mut State) -> Option<(usize, usize)> {
         // Function parameter
         'a'...'z' => {
             // println!("args: {:?}", args);
-            return Some((state.args[p as usize - 'a' as usize], state.pointer));
+            return Some(state.args[p as usize - 'a' as usize]);
         }
         'P' => {
             if next(state) != '(' {
@@ -43,11 +43,11 @@ fn eval(state: &mut State) -> Option<(usize, usize)> {
             }
             // '('
             state.pointer += 1;
-            let (val, mut pointer) = eval(state)?;
+            let val = eval(state)?;
             println!("{}", val);
             // ')'
-            pointer += 1;
-            return Some((val, pointer));
+            state.pointer += 1;
+            return Some(val);
         }
         // Function definition
         'A'...'Z' if next(state) == '[' => {
@@ -76,22 +76,22 @@ fn eval(state: &mut State) -> Option<(usize, usize)> {
                     continue;
                 }
                 let result = eval(state)?;
-                newargs.push(result.0);
-                state.pointer = result.1;
+                newargs.push(result);
             }
 
             let func_string = state.func.get(&func_name)?;
             let mut func_pointer = 0;
             let mut val = 0;
             while func_pointer <= func_string.len() - 1 {
-                let result = eval(&mut State {
+                let mut func_state = State {
                     program: func_string,
                     func: state.func.clone(),
                     pointer: func_pointer,
                     args: newargs.clone(),
-                })?;
-                val = result.0;
-                func_pointer = result.1;
+                };
+                let result = eval(&mut func_state)?;
+                val = result;
+                func_pointer = func_state.pointer;
                 while func_pointer <= func_string.len() - 1
                     && func_string.chars().nth(func_pointer)?.is_whitespace()
                 {
@@ -100,7 +100,7 @@ fn eval(state: &mut State) -> Option<(usize, usize)> {
             }
             // ')'
             state.pointer += 1;
-            return Some((val, state.pointer));
+            return Some(val);
         }
         // Literal numbers
         '0'...'9' => {
@@ -111,14 +111,12 @@ fn eval(state: &mut State) -> Option<(usize, usize)> {
                 val = val * 10 + state.program.chars().nth(state.pointer)?.to_digit(10)?;
                 state.pointer += 1;
             }
-            return Some((val as usize, state.pointer));
+            return Some(val as usize);
         }
         // arithmetic operators
         '+' | '-' | '*' | '/' => {
-            let (x, pointer) = eval(state)?;
-            state.pointer = pointer;
-            let (y, pointer) = eval(state)?;
-            state.pointer = pointer;
+            let x = eval(state)?;
+            let y = eval(state)?;
             let val = match p {
                 '+' => x + y,
                 '-' => x - y,
@@ -126,7 +124,7 @@ fn eval(state: &mut State) -> Option<(usize, usize)> {
                 '/' => x / y,
                 _ => error(format!("Invalid operator: {:?}", p)),
             };
-            return Some((val, pointer));
+            return Some(val);
         }
         _ => error(format!(
             "Invalid character: {:?}, pointer: {:?}",
