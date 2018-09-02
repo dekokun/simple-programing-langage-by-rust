@@ -146,9 +146,7 @@ fn _log(log: String) {
 fn next(state: &State) -> char {
     return state
         .program
-        .get(state.pointer..state.pointer + 1)
-        .unwrap()
         .chars()
-        .last()
+        .nth(state.pointer)
         .unwrap();
 }
